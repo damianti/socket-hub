@@ -1,17 +1,14 @@
 # Socket-Hub
 
-## 🚀 Chat Distribuido en Tiempo Real
+Real-time distributed chat application built with microservices architecture.
 
-Socket-Hub es una aplicación de chat en tiempo real basada en arquitectura de microservicios. El objetivo es crear un sistema similar a WhatsApp/Telegram/Teams, preparado para manejar conexiones concurrentes y distribuir carga en un entorno escalable.
+## Status
+🚧 **Work in Progress** - Currently implementing core WebSocket functionality
 
-### 🎯 Objetivos
-- Implementar un sistema de chat en tiempo real con WebSockets
-- Manejo de conexiones concurrentes con multithreading
-- Arquitectura modular de microservicios
-- Patrones de diseño: Factory, Observer, Singleton
-- Preparado para escalado horizontal con Kubernetes
+## Overview
+Socket-Hub is a real-time chat system designed to handle concurrent connections and distribute load across scalable infrastructure. Similar to WhatsApp/Telegram/Teams.
 
-### 🏗️ Arquitectura
+## Architecture
 ```
 ┌─────────────────┐    ┌─────────────────┐
 │   Web Client    │    │  Mobile Client  │
@@ -28,7 +25,6 @@ Socket-Hub es una aplicación de chat en tiempo real basada en arquitectura de m
                                 │
     ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
     │ Auth Service│  │Chat Service │  │User Service │
-    │             │  │             │  │             │
     └─────────────┘  └─────────────┘  └─────────────┘
                                 │
                     ┌─────────────────────────┐
@@ -36,49 +32,50 @@ Socket-Hub es una aplicación de chat en tiempo real basada en arquitectura de m
                     └─────────────────────────┘
 ```
 
-### 🛠️ Stack Tecnológico
+## Tech Stack
 - **Backend**: FastAPI + WebSockets
-- **Base de datos**: PostgreSQL
-- **Mensajería**: Redis
-- **Contenerización**: Docker + Docker Compose
-- **Orquestación**: Kubernetes (futuro)
+- **Database**: PostgreSQL
+- **Messaging**: Redis
+- **Frontend**: React + TypeScript
+- **Containerization**: Docker
+- **Orchestration**: Kubernetes (planned)
 
-### 📁 Estructura del Proyecto
+## Project Structure
 ```
 socket-hub/
 ├── services/
-│   ├── api-gateway/          # API Gateway con WebSockets
-│   ├── auth-service/         # Autenticación y autorización
-│   ├── chat-service/         # Gestión de salas y mensajes
-│   └── user-service/         # Gestión de usuarios
+│   ├── api-gateway/          # WebSocket API Gateway
+│   ├── auth-service/         # Authentication
+│   ├── chat-service/         # Chat management
+│   └── user-service/         # User management
+├── frontend/
+│   └── web-app/             # React frontend
 ├── shared/
-│   ├── models/              # Modelos compartidos
-│   ├── utils/               # Utilidades comunes
-│   └── config/              # Configuraciones
+│   ├── models/              # Shared models
+│   ├── utils/               # Utilities
+│   └── config/              # Configuration
 ├── infrastructure/
 │   ├── docker/              # Dockerfiles
 │   ├── k8s/                 # Kubernetes manifests
-│   └── scripts/             # Scripts de deployment
-├── docs/                    # Documentación
-└── docker-compose.yml       # Orquestación local
+│   └── scripts/             # Deployment scripts
+└── docs/                    # Documentation
 ```
 
-### 🚀 Desarrollo Incremental
-1. **Fase 1**: Estructura base + API Gateway básico
-2. **Fase 2**: Auth Service + Chat Service
-3. **Fase 3**: Escalabilidad + Kubernetes
+## Development Phases
+1. **Phase 1**: Basic WebSocket functionality ✅
+2. **Phase 2**: Authentication & chat rooms 🚧
+3. **Phase 3**: Microservices & scaling 📋
 
-### 🏃‍♂️ Ejecutar Localmente
+## Local Development
 ```bash
-# Clonar y configurar
-git clone <repo>
-cd socket-hub
+# Backend
+cd services/api-gateway
+uvicorn main:app --reload
 
-# Ejecutar con Docker Compose
-docker-compose up --build
+# Frontend
+cd frontend/web-app
+npm start
 ```
 
-### 📚 Documentación
-- [Arquitectura](./docs/architecture.md)
-- [API Reference](./docs/api.md)
-- [Deployment](./docs/deployment.md)
+## Contributing
+This project is in active development. Check the docs folder for detailed architecture and API documentation.
