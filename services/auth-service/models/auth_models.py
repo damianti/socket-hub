@@ -7,7 +7,7 @@ class SignupRequest(BaseModel):
 
 class LoginRequest(BaseModel):
     username:str
-    email:str
+    email:str   
     password:str
 
 class UserResponse(BaseModel):
