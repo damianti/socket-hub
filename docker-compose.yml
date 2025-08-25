@@ -4,7 +4,9 @@ services:
     postgres:
       image: postgres:15-alpine
       environment:
-        - DATABASE_URL= ${DATABASE_URL}
+        - POSTGRES_USER=${POSTGRES_USER}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        - POSTGRES_DB=${POSTGRES_DB}
       volumes:
         - postgres_data:/var/lib/postgresql/data
       healthcheck:
@@ -15,20 +17,20 @@ services:
       networks:
         - socket-hub-network
 
-      auth-service:
-        build:
-          context: ./services/auth-service
-          dockerfile: Dockerfile
-        environment:
-          -DATABASE_URL=${DATABASE_URL}
-        depends_on:
-          postgres:
-            condition: service_healthy
-        networks:
-          -socket-hub-network
+    auth-service:
+      build:
+        context: ./services/auth-service
+        dockerfile: Dockerfile
+      environment:
+        - DATABASE_URL=${DATABASE_URL}
+      depends_on:
+        postgres:
+          condition: service_healthy
+      networks:
+        - socket-hub-network
 
     api-gateway:
-      build:args:
+      build:
         context: ./services/api-gateway
         dockerfile: Dockerfile
       ports:
@@ -40,10 +42,23 @@ services:
       networks:
         - socket-hub-network
 
+    frontend:
+      build:
+        context: ./frontend/web-app
+        dockerfile: Dockerfile
+      ports:
+        - "3000:3000"
+      environment:
+        - REACT_APP_API_URL=http://localhost:8000
+      depends_on:
+        - api-gateway
+      networks:
+        - socket-hub-network
 
 
 networks:
   socket-hub-network:
     driver: bridge
 
-volumes:
+volumes: 
+  postgres_data:

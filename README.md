@@ -3,12 +3,35 @@
 Real-time distributed chat application built with microservices architecture.
 
 ## Status
-🚧 **Work in Progress** - Currently implementing core WebSocket functionality
+🚧 **Work in Progress** - Microservices architecture with Docker Compose implemented
 
 ## Overview
 Socket-Hub is a real-time chat system designed to handle concurrent connections and distribute load across scalable infrastructure. Similar to WhatsApp/Telegram/Teams.
 
 ## Architecture
+
+### Current Implementation
+```
+┌─────────────────┐
+│   React Frontend│ (Port 3000)
+└─────────────────┘
+        │
+┌─────────────────────────┐
+│     API Gateway         │ (Port 8000 - External)
+│  (WebSocket Manager)    │
+└─────────────────────────┘
+        │
+┌─────────────────────────┐
+│    Auth Service         │ (Port 8001 - Internal)
+│  (User Authentication)  │
+└─────────────────────────┘
+        │
+┌─────────────────────────┐
+│      PostgreSQL         │ (Port 5432 - Internal)
+└─────────────────────────┘
+```
+
+### Planned Architecture
 ```
 ┌─────────────────┐    ┌─────────────────┐
 │   Web Client    │    │  Mobile Client  │
@@ -63,14 +86,46 @@ socket-hub/
 
 ## Development Phases
 1. **Phase 1**: Basic WebSocket functionality ✅
-2. **Phase 2**: Authentication & chat rooms 🚧
-3. **Phase 3**: Microservices & scaling 📋
+2. **Phase 2**: Authentication & chat rooms ✅
+3. **Phase 3**: Microservices & Docker Compose ✅
+4. **Phase 4**: Kubernetes deployment 📋
 
 ## Local Development
+
+### Prerequisites
+- Docker and Docker Compose
+- Node.js 18+ (for local development)
+
+### Quick Start with Docker Compose
+```bash
+# Clone the repository
+git clone <repository-url>
+cd socket-hub
+
+# Copy environment files
+cp .env.example .env
+cp services/auth-service/.env.example services/auth-service/.env
+
+# Update .env files with your configuration
+# Edit .env and services/auth-service/.env
+
+# Start all services
+docker-compose up --build
+
+# Access the application
+# Frontend: http://localhost:3000
+# API Gateway: http://localhost:8000
+```
+
+### Manual Development Setup
 ```bash
 # Backend
 cd services/api-gateway
 uvicorn main:app --reload
+
+# Auth Service
+cd services/auth-service
+uvicorn main:app --reload --port 8001
 
 # Frontend
 cd frontend/web-app
