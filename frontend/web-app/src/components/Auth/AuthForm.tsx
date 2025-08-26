@@ -8,6 +8,7 @@ const AuthForm = () => {
         email:'',
         password:''
     });
+    
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -21,7 +22,7 @@ const AuthForm = () => {
     };
     const validateForm = (e: React.FormEvent) => {
         if (!formData.username.trim()) return 'Username is required';
-        if (!formData.email.trim()) return 'Email is required';
+        if (!isLogin && !formData.email.trim()) return 'Email is required';
         if (!formData.password.trim()) return 'Password is required';
         if (formData.password.length < 6) return 'Password must be at least 6 characters';
         return null;
@@ -39,34 +40,26 @@ const AuthForm = () => {
             setIsLoading(false);
             return;
         }
-
+        const signupData = {
+            username: formData.username,
+            email: formData.email,
+            password: formData.password
+        };
+        
+        const loginData = {
+            username: formData.username,
+            password: formData.password
+        };
 
         try{
-            let endpoint;
-            let requestOptions;
-            
-            if (isLogin) {
-                // Login: usar query parameters
-                endpoint = `/api/auth/login?username=${encodeURIComponent(formData.username)}&password=${encodeURIComponent(formData.password)}`;
-                requestOptions = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                };
-            } else {
-                // Signup: usar JSON body
-                endpoint = '/api/auth/signup';
-                requestOptions = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                };
-            }
-            
-            const response = await fetch(endpoint, requestOptions);
+            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(isLogin ? loginData : signupData)
+            });
             const data = await response.json();
 
             if (response.ok) {
@@ -107,6 +100,7 @@ const AuthForm = () => {
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
+                {!isLogin && (
                 <input
                     type="email"
                     name="email"
@@ -115,6 +109,7 @@ const AuthForm = () => {
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
+                )}
                 <input
                     type="password"
                     name="password"
