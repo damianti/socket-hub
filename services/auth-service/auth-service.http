@@ -1,0 +1,134 @@
+### Auth Service API Tests
+### Base URL: http://localhost:8001
+
+### 1. Health Check - Root Endpoint
+GET http://localhost:8001/
+Content-Type: application/json
+
+###
+
+### 2. Health Check - Specific Endpoint
+GET http://localhost:8001/health/
+Content-Type: application/json
+
+###
+
+### 3. User Signup
+POST http://localhost:8001/auth/signup
+Content-Type: application/json
+
+{
+    "username": "testuser1",
+    "email": "test1@example.com",
+    "password": "password123"
+}
+
+###
+
+### 4. User Signup - Another User
+POST http://localhost:8001/auth/signup
+Content-Type: application/json
+
+{
+    "username": "testuser2",
+    "email": "test2@example.com",
+    "password": "securepassword456"
+}
+
+###
+
+### 5. User Login - Correct Credentials
+POST http://localhost:8001/auth/login?username=testuser1&password=password123
+Content-Type: application/json
+
+###
+
+### 6. User Login - Wrong Password
+POST http://localhost:8001/auth/login?username=testuser1&password=wrongpassword
+Content-Type: application/json
+
+###
+
+### 7. User Login - Non-existent User
+POST http://localhost:8001/auth/login?username=nonexistent&password=password123
+Content-Type: application/json
+
+###
+
+### 8. User Login - Second User
+POST http://localhost:8001/auth/login?username=testuser2&password=securepassword456
+Content-Type: application/json
+
+###
+
+### 9. Test Duplicate Username Signup
+POST http://localhost:8001/auth/signup
+Content-Type: application/json
+
+{
+    "username": "testuser1",
+    "email": "different@example.com",
+    "password": "password123"
+}
+
+###
+
+### 10. Test Duplicate Email Signup
+POST http://localhost:8001/auth/signup
+Content-Type: application/json
+
+{
+    "username": "differentuser",
+    "email": "test1@example.com",
+    "password": "password123"
+}
+
+###
+
+### 11. Test Invalid Email Format
+POST http://localhost:8001/auth/signup
+Content-Type: application/json
+
+{
+    "username": "invaliduser",
+    "email": "invalid-email",
+    "password": "password123"
+}
+
+###
+
+### 12. Test Empty Fields
+POST http://localhost:8001/auth/signup
+Content-Type: application/json
+
+{
+    "username": "",
+    "email": "",
+    "password": ""
+}
+
+###
+
+### 13. Test Short Password
+POST http://localhost:8001/auth/signup
+Content-Type: application/json
+
+{
+    "username": "shortpassuser",
+    "email": "short@example.com",
+    "password": "123"
+}
+
+###
+
+### 14. Get OpenAPI Schema
+GET http://localhost:8001/openapi.json
+Content-Type: application/json
+
+###
+
+### 15. Access Swagger Documentation
+GET http://localhost:8001/docs
+Content-Type: text/html
+
+###

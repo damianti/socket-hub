@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from models.users_model import UserCreate, UserResponse
 from db.models import User
-from argon2 import PasswordHasher
+from utils.password_hasher import password_hasher
 
 
 class IUserRepository(ABC):
@@ -14,7 +14,6 @@ class IUserRepository(ABC):
 class UserRepository(IUserRepository):
     def __init__(self, session):
         self.session = session
-        self.ph = PasswordHasher()
 
     def get_by_id(self, user_id):
         return self.session.query(User).filter(User.id == user_id).first()
@@ -31,7 +30,7 @@ class UserRepository(IUserRepository):
         if self.get_user_by_email(request.email):
             raise ValueError("email already exists")
             
-        new_user = User(username=request.username, email=request.email, password_hash= self.ph.hash(request.password))
+        new_user = User(username=request.username, email=request.email, password_hash=password_hasher.hash(request.password))
         self.session.add(new_user)
         self.session.commit()
 
@@ -44,7 +43,7 @@ class UserRepository(IUserRepository):
 
     def verify_password(self, username:str, password:str) -> UserResponse | None:
         user = self.get_user_by_username(username)
-        if user and self.ph.verify(user.password_hash, password):
+        if user and password_hasher.verify(user.password_hash, password):
             return UserResponse(
                 id=user.id,
                 username=user.username,
