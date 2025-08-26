@@ -1,7 +1,11 @@
 import React, {useState} from 'react';
 
+type AuthFormProps = {
+    setIsLoggedin: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  
 
-const AuthForm = () => {
+const AuthForm = ({setIsLoggedin}: AuthFormProps ) => {
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
         username:'',
@@ -64,6 +68,7 @@ const AuthForm = () => {
 
             if (response.ok) {
                 setSuccess (isLogin ? 'Login successful!' : 'Account created successfully!')
+                if (isLogin) setIsLoggedin(true);
             } else {
                 setError(data.message || 'something went wrong');
             }

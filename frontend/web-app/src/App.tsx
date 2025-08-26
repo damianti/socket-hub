@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import AuthForm from './components/Auth/AuthForm';
+import WebSocketTest from './components/WebSocketTest';
 
 function App() {
+  const [isLoggedin, setIsLoggedin] = useState (false)
   return (
     <div className="App bg-gray-100 min-h-screen">
       <header className="App-header">
@@ -10,7 +12,7 @@ function App() {
         <p>real time chats with WebSockets</p>
       </header>
       <main>
-        <AuthForm />
+        {isLoggedin ? <WebSocketTest/> : <AuthForm setIsLoggedin={setIsLoggedin}/> }
       </main>
     </div>
   );
