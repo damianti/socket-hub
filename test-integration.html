@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket-Hub Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.online {
+            background-color: #28a745;
+            color: white;
+        }
+        .status.offline {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Socket-Hub Integration Test</h1>
+    
+    <div class="container">
+        <h2>Service Status</h2>
+        <div id="status">
+            <div>Frontend (Port 3000): <span id="frontend-status" class="status">Checking...</span></div>
+            <div>API Gateway (Port 8000): <span id="gateway-status" class="status">Checking...</span></div>
+            <div>Auth Service (Port 8001): <span id="auth-status" class="status">Checking...</span></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Authentication Test</h2>
+        <form id="authForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="button" onclick="testSignup()">Test Signup</button>
+            <button type="button" onclick="testLogin()">Test Login</button>
+            <button type="button" onclick="clearResults()">Clear Results</button>
+        </form>
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Check service status on page load
+        window.onload = function() {
+            checkServiceStatus();
+        };
+
+        async function checkServiceStatus() {
+            // Check Frontend
+            try {
+                const frontendResponse = await fetch('http://localhost:3000');
+                document.getElementById('frontend-status').textContent = 'ONLINE';
+                document.getElementById('frontend-status').className = 'status online';
+            } catch (error) {
+                document.getElementById('frontend-status').textContent = 'OFFLINE';
+                document.getElementById('frontend-status').className = 'status offline';
+            }
+
+            // Check API Gateway
+            try {
+                const gatewayResponse = await fetch('http://localhost:8000/');
+                const gatewayData = await gatewayResponse.json();
+                document.getElementById('gateway-status').textContent = 'ONLINE';
+                document.getElementById('gateway-status').className = 'status online';
+            } catch (error) {
+                document.getElementById('gateway-status').textContent = 'OFFLINE';
+                document.getElementById('gateway-status').className = 'status offline';
+            }
+
+            // Check Auth Service
+            try {
+                const authResponse = await fetch('http://localhost:8001/');
+                const authData = await authResponse.json();
+                document.getElementById('auth-status').textContent = 'ONLINE';
+                document.getElementById('auth-status').className = 'status online';
+            } catch (error) {
+                document.getElementById('auth-status').textContent = 'OFFLINE';
+                document.getElementById('auth-status').className = 'status offline';
+            }
+        }
+
+        async function testSignup() {
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!username || !email || !password) {
+                showResult('Please fill in all fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8000/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(`✅ Signup Successful!\n\nResponse:\n${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult(`❌ Signup Failed!\n\nStatus: ${response.status}\nResponse:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Network Error!\n\nError: ${error.message}`, 'error');
+            }
+        }
+
+        async function testLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                showResult('Please fill in username and password', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8000/api/auth/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data) {
+                    showResult(`✅ Login Successful!\n\nResponse:\n${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult(`❌ Login Failed!\n\nStatus: ${response.status}\nResponse:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Network Error!\n\nError: ${error.message}`, 'error');
+            }
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = `result ${type}`;
+            resultDiv.style.display = 'block';
+        }
+
+        function clearResults() {
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+        }
+    </script>
+</body>
+</html>

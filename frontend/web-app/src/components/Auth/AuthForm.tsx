@@ -42,14 +42,31 @@ const AuthForm = () => {
 
 
         try{
-            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
+            let endpoint;
+            let requestOptions;
+            
+            if (isLogin) {
+                // Login: usar query parameters
+                endpoint = `/api/auth/login?username=${encodeURIComponent(formData.username)}&password=${encodeURIComponent(formData.password)}`;
+                requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+            } else {
+                // Signup: usar JSON body
+                endpoint = '/api/auth/signup';
+                requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                };
+            }
+            
+            const response = await fetch(endpoint, requestOptions);
             const data = await response.json();
 
             if (response.ok) {
