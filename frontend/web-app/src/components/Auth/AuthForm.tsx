@@ -2,10 +2,11 @@ import React, {useState} from 'react';
 
 type AuthFormProps = {
     setIsLoggedin: React.Dispatch<React.SetStateAction<boolean>>;
+    setUsername: React.Dispatch<React.SetStateAction<string>>;
   };
   
 
-const AuthForm = ({setIsLoggedin}: AuthFormProps, setUsername: string ) => {
+const AuthForm = ({setIsLoggedin, setUsername}: AuthFormProps ) => {
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
         username:'',
@@ -18,16 +19,15 @@ const AuthForm = ({setIsLoggedin}: AuthFormProps, setUsername: string ) => {
     const [success, setSuccess] = useState('');
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
     };
     const validateForm = (e: React.FormEvent) => {
         if (!formData.username.trim()) return 'Username is required';
-        if (!isLogin && !formData.email.trim()) return 'Email is required';
         if (!formData.password.trim()) return 'Password is required';
+        if (!isLogin && !formData.email.trim()) return 'Email is required';
         if (formData.password.length < 6) return 'Password must be at least 6 characters';
         return null;
     };
@@ -69,11 +69,14 @@ const AuthForm = ({setIsLoggedin}: AuthFormProps, setUsername: string ) => {
             if (response.ok) {
                 setSuccess (isLogin ? 'Login successful!' : 'Account created successfully!')
                 if (isLogin){
-                    setUsername (data.username);
+                    // Handle JWT token response
+                    const token = data.access_token;
+                    localStorage.setItem('token', token);
+                    setUsername (data.user.username);
                     setIsLoggedin(true);
                 }    
             } else {
-                setError(data.message || 'something went wrong');
+                setError(data.detail || 'Something went wrong');
             }
         }
         catch (err){
