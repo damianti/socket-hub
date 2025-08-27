@@ -4,7 +4,9 @@ import AuthForm from './components/Auth/AuthForm';
 import WebSocketTest from './components/WebSocketTest';
 
 function App() {
-  const [isLoggedin, setIsLoggedin] = useState (false)
+  const [isLoggedin, setIsLoggedin] = useState (false);
+  const [username, setUsername] = useState ('');
+
   return (
     <div className="App bg-gray-100 min-h-screen">
       <header className="App-header">
@@ -12,7 +14,7 @@ function App() {
         <p>real time chats with WebSockets</p>
       </header>
       <main>
-        {isLoggedin ? <WebSocketTest/> : <AuthForm setIsLoggedin={setIsLoggedin}/> }
+        {isLoggedin ? <WebSocketTest /> : <AuthForm setIsLoggedin={setIsLoggedin} setUsername={setUsername}/> }
       </main>
     </div>
   );

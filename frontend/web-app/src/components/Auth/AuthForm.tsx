@@ -5,7 +5,7 @@ type AuthFormProps = {
   };
   
 
-const AuthForm = ({setIsLoggedin}: AuthFormProps ) => {
+const AuthForm = ({setIsLoggedin}: AuthFormProps, setUsername: string ) => {
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
         username:'',
@@ -68,7 +68,10 @@ const AuthForm = ({setIsLoggedin}: AuthFormProps ) => {
 
             if (response.ok) {
                 setSuccess (isLogin ? 'Login successful!' : 'Account created successfully!')
-                if (isLogin) setIsLoggedin(true);
+                if (isLogin){
+                    setUsername (data.username);
+                    setIsLoggedin(true);
+                }    
             } else {
                 setError(data.message || 'something went wrong');
             }

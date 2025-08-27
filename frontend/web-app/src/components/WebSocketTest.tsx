@@ -7,8 +7,12 @@ interface Message {
   type: 'sent' | 'received' | 'system';
   timestamp: Date;
 }
+type WebSocketTestParams ={
+  username: string;
+};
 
-const WebSocketTest: React.FC = () => {
+
+const WebSocketTest: React.FC = ({username}: WebSocketTestParams) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isConnected, setIsConnected] = useState(false);
