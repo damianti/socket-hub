@@ -1,3 +1,6 @@
+version: 1
+disable_existing_loggers: False
+
 logging:
   level: INFO
   handlers:
@@ -10,7 +13,8 @@ logging:
       enabled: true
       level: INFO
   format:
-    console: "%(asctime)s - %(name)s - %(levelname) - %(message)s"
-    file: "%(asctime)s - %(name)s - %(levelname) - %(message)s"
+
+    console: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    file: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
     
