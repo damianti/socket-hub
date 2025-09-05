@@ -1,0 +1,16 @@
+logging:
+  level: INFO
+  handlers:
+    file:
+      enabled: true
+      path: "logs"
+      max_bytes: 10485760
+      backup_count: 7
+    console:
+      enabled: true
+      level: INFO
+  format:
+    console: "%(asctime)s - %(name)s - %(levelname) - %(message)s"
+    file: "%(asctime)s - %(name)s - %(levelname) - %(message)s"
+
+    

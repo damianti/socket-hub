@@ -12,7 +12,7 @@ type WebSocketTestParams ={
 };
 
 
-const WebSocketTest: React.FC = ({username}: WebSocketTestParams) => {
+const WebSocketTest: React.FC <WebSocketTestParams> = ({username} ) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isConnected, setIsConnected] = useState(false);
